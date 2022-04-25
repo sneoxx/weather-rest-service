@@ -36,7 +36,7 @@ public class TemperatureInCityResource implements ru.infinnity.zaraev.weatherres
     public Map<String, String> getTemperatureInCityFromOpenWeatherMap(String city, String country, String date) {
         String responseFromService = weatherRestService.getWeatherByCityFromOpenWeatherMap(city, country, date);
         Map<String, String> myResponse = weatherRestService.getMyResponseForOpenWeatherMap(responseFromService);
-        log.info("getTemperatureInCityFromOpenWeatherMap() Запрос: {}, {}, {} успешно вернул ответ {}", city, country, date, myResponse);
+        log.info("getTemperatureInCityFromOpenWeatherMap() Запрос: {}, {}, {} вернул ответ {}", city, country, date, myResponse);
         return myResponse;
     }
 
@@ -52,7 +52,7 @@ public class TemperatureInCityResource implements ru.infinnity.zaraev.weatherres
     public Map<String, String> getTemperatureInCityFromWeatherApi(String city, String country, String date) {
         String responseFromService = weatherRestService.getWeatherByCityFromWeatherApi(city, country, date);
         Map<String, String> myResponse = weatherRestService.getMyResponseForWeatherApi(responseFromService);
-        log.info("getTemperatureInCityFromWeatherApi() Запрос: {}, {}, {} успешно вернул ответ {}", city, country, date, myResponse);
+        log.info("getTemperatureInCityFromWeatherApi() Запрос: {}, {}, {} вернул ответ {}", city, country, date, myResponse);
         return myResponse;
     }
 
@@ -68,7 +68,7 @@ public class TemperatureInCityResource implements ru.infinnity.zaraev.weatherres
     public Map<String, String> getTemperatureInCityFromWeatherStack(String city, String country, String date) {
         String responseFromService = weatherRestService.getWeatherByCityFromWeatherStack(city, country, date);
         Map<String, String> myResponse = weatherRestService.getMyResponseForWeatherStack(responseFromService);
-        log.info("getTemperatureInCityFromWeatherStack() Запрос: {}, {}, {} успешно вернул ответ {}", city, country, date, myResponse);
+        log.info("getTemperatureInCityFromWeatherStack() Запрос: {}, {}, {} вернул ответ {}", city, country, date, myResponse);
         return myResponse;
     }
 

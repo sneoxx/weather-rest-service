@@ -88,13 +88,15 @@ public class WeatherRestServiceImpl implements WeatherRestService {
     @Override
     public Map<String, String> getMyResponseForOpenWeatherMap(String stringResponse) {
         JSONObject JsonObj = new JSONObject(stringResponse);
-        Map<String, String> myResponse = null;
+        Map<String, String> myResponse;
         if (JsonObj.getJSONObject("main") != null) {
             Object object = JsonObj.getJSONObject("main").get("temp");
             myResponse = getMapWithTemp(object);
             log.info("getMyResponseForOpenWeatherMap() {} ", myResponse);
             return myResponse;
         } else
+            myResponse = new HashMap<>();
+            myResponse.put("Ошибка сервиса получения данных из сервиса","WeatherMap");
             log.info("getMyResponseForOpenWeatherMap() Мар не получена, сервис вернул {} ", myResponse);
         return myResponse;
     }
@@ -106,22 +108,24 @@ public class WeatherRestServiceImpl implements WeatherRestService {
      */
     @Override
     public Map<String, String> getMyResponseForWeatherApi(String stringResponse) {
-        JSONObject JsonObj = new JSONObject(stringResponse);
-        Map<String, String> myResponse = null;
-        if (!JsonObj.isNull("current")) {
+        String str = stringResponse;
+        JSONObject JsonObj = new JSONObject(str);
+        Map<String, String> myResponse;
+        if (JsonObj.getJSONObject("current")  != null) {
             Object object = JsonObj.getJSONObject("current").get("temp_c");
             myResponse = getMapWithTemp(object);
             log.info("getMyResponseForWeatherApi() {} ", myResponse);
             return myResponse;
         } else
-
+            myResponse = new HashMap<>();
+            myResponse.put("Ошибка сервиса получения данных из сервиса","WeatherApi");
             log.info("getMyResponseForWeatherApi() Мар не получена, сервис вернул {} ", myResponse);
         return myResponse;
     }
 
     /** Получить температуру из ответа сервиса WeatherStack
      *
-     * @param stringResponse ответ сервиса OpenWeatherMap
+     * @param stringResponse ответ сервиса WeatherStack
      * @return - Map, где ключ "temp", а значение полученная из сервиса температура
      */
     @Override
@@ -134,7 +138,8 @@ public class WeatherRestServiceImpl implements WeatherRestService {
             log.info("getMyResponseForOpenWeatherMap() {} ", myResponse);
             return myResponse;
         } else
-
+            myResponse = new HashMap<>();
+            myResponse.put("Ошибка сервиса получения данных из сервиса","WeatherStack");
             log.info("getMyResponseForOpenWeatherMap() Мар не получена, сервис вернул {} ", myResponse);
         return myResponse;
     }
@@ -181,27 +186,29 @@ public class WeatherRestServiceImpl implements WeatherRestService {
         float temperatureFromWeatherApi = 0.0f;
         float temperatureWeatherStack = 0.0f;
 
-        Map<String, String> myResponseForOpenWeatherMap = getMyResponseForOpenWeatherMap(getWeatherByCityFromOpenWeatherMap(city, country, date));
-        if (myResponseForOpenWeatherMap != null) {
+        Map<String, String> myResponseForOpenWeatherMap = getMyResponseForOpenWeatherMap(
+                getWeatherByCityFromOpenWeatherMap(city, country, date));
+        if (myResponseForOpenWeatherMap.get("temp") != null) {
             String responseFromService1 = myResponseForOpenWeatherMap.get("temp");
             temperatureFromOpenWeatherMap = Float.parseFloat(responseFromService1);
             numberOfWorkingServices++;
         }
 
-        Map<String, String> myResponseForWeatherApi = getMyResponseForWeatherApi(getWeatherByCityFromWeatherApi(city, country, date));
-        if (myResponseForWeatherApi != null) {
+        Map<String, String> myResponseForWeatherApi = getMyResponseForWeatherApi(
+                getWeatherByCityFromWeatherApi(city, country, date));
+        if (myResponseForWeatherApi.get("temp") != null) {
             String responseFromService2 = myResponseForWeatherApi.get("temp");
             temperatureFromWeatherApi = Float.parseFloat(responseFromService2);
             numberOfWorkingServices++;
         }
 
-        Map<String, String> myResponseForWeatherStack = getMyResponseForWeatherStack(getWeatherByCityFromWeatherStack(city, country, date));
-        if (myResponseForWeatherStack != null) {
+        Map<String, String> myResponseForWeatherStack = getMyResponseForWeatherStack(
+                getWeatherByCityFromWeatherStack(city, country, date));
+        if (myResponseForWeatherStack.get("temp")!= null) {
             String responseFromService3 = myResponseForWeatherStack.get("temp");
             temperatureWeatherStack = Float.parseFloat(responseFromService3);
             numberOfWorkingServices++;
         }
-
 
         Float averageTemperature =  (temperatureFromOpenWeatherMap + temperatureFromWeatherApi + temperatureWeatherStack) / numberOfWorkingServices ;
         log.info("getAveragingTemperature() В городе {} средняя температура {}", city, averageTemperature);
