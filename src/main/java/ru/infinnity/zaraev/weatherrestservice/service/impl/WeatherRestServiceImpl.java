@@ -38,11 +38,12 @@ public class WeatherRestServiceImpl implements WeatherRestService {
 
     private final TemperatureInCityRepository temperatureInCityRepository;
 
-    /** Запрос погоды на дату по городу и стране из сервиса OpenWeatherMap
+    /**
+     * Запрос погоды на дату по городу и стране из сервиса OpenWeatherMap
      *
-     * @param city - город запроса
+     * @param city    - город запроса
      * @param country - страна запроса
-     * @param date - дата запроса
+     * @param date    - дата запроса
      * @return - ответ сервиса
      */
     @Override
@@ -52,11 +53,12 @@ public class WeatherRestServiceImpl implements WeatherRestService {
         return responseFromService;
     }
 
-    /** Запрос погоды на дату по городу и стране из сервиса WeatherApi
+    /**
+     * Запрос погоды на дату по городу и стране из сервиса WeatherApi
      *
-     * @param city - город запроса
+     * @param city    - город запроса
      * @param country - страна запроса
-     * @param date - дата запроса
+     * @param date    - дата запроса
      * @return - ответ сервиса
      */
     @Override
@@ -66,11 +68,12 @@ public class WeatherRestServiceImpl implements WeatherRestService {
         return responseFromService;
     }
 
-    /** Запрос погоды на дату по городу и стране из сервиса WeatherStack
+    /**
+     * Запрос погоды на дату по городу и стране из сервиса WeatherStack
      *
-     * @param city - город запроса
+     * @param city    - город запроса
      * @param country - страна запроса
-     * @param date - дата запроса
+     * @param date    - дата запроса
      * @return - ответ сервиса
      */
     @Override
@@ -80,7 +83,8 @@ public class WeatherRestServiceImpl implements WeatherRestService {
         return responseFromService;
     }
 
-    /** Получить температуру из ответа сервиса OpenWeatherMap
+    /**
+     * Получить температуру из ответа сервиса OpenWeatherMap
      *
      * @param stringResponse ответ сервиса OpenWeatherMap
      * @return - Map, где ключ "temp", а значение полученная из сервиса температура
@@ -96,34 +100,35 @@ public class WeatherRestServiceImpl implements WeatherRestService {
             return myResponse;
         } else
             myResponse = new HashMap<>();
-            myResponse.put("Ошибка сервиса получения данных из сервиса","WeatherMap");
-            log.info("getMyResponseForOpenWeatherMap() Мар не получена, сервис вернул {} ", myResponse);
+        myResponse.put("Ошибка сервиса получения данных из сервиса", "WeatherMap");
+        log.info("getMyResponseForOpenWeatherMap() Мар не получена, сервис вернул {} ", myResponse);
         return myResponse;
     }
 
-    /** Получить температуру из ответа сервиса WeatherApi
+    /**
+     * Получить температуру из ответа сервиса WeatherApi
      *
      * @param stringResponse ответ сервиса WeatherApi
      * @return - Map, где ключ "temp", а значение полученная из сервиса температура
      */
     @Override
     public Map<String, String> getMyResponseForWeatherApi(String stringResponse) {
-        String str = stringResponse;
-        JSONObject JsonObj = new JSONObject(str);
+        JSONObject JsonObj = new JSONObject(stringResponse);
         Map<String, String> myResponse;
-        if (JsonObj.getJSONObject("current")  != null) {
+        if (JsonObj.getJSONObject("current") != null) {
             Object object = JsonObj.getJSONObject("current").get("temp_c");
             myResponse = getMapWithTemp(object);
             log.info("getMyResponseForWeatherApi() {} ", myResponse);
             return myResponse;
         } else
             myResponse = new HashMap<>();
-            myResponse.put("Ошибка сервиса получения данных из сервиса","WeatherApi");
-            log.info("getMyResponseForWeatherApi() Мар не получена, сервис вернул {} ", myResponse);
+        myResponse.put("Ошибка сервиса получения данных из сервиса", "WeatherApi");
+        log.info("getMyResponseForWeatherApi() Мар не получена, сервис вернул {} ", myResponse);
         return myResponse;
     }
 
-    /** Получить температуру из ответа сервиса WeatherStack
+    /**
+     * Получить температуру из ответа сервиса WeatherStack
      *
      * @param stringResponse ответ сервиса WeatherStack
      * @return - Map, где ключ "temp", а значение полученная из сервиса температура
@@ -131,7 +136,7 @@ public class WeatherRestServiceImpl implements WeatherRestService {
     @Override
     public Map<String, String> getMyResponseForWeatherStack(String stringResponse) {
         JSONObject JsonObj = new JSONObject(stringResponse);
-        Map<String, String> myResponse = null;
+        Map<String, String> myResponse;
         if (!JsonObj.isNull("current")) {
             Object object = JsonObj.getJSONObject("current").get("temperature");
             myResponse = getMapWithTemp(object);
@@ -139,12 +144,13 @@ public class WeatherRestServiceImpl implements WeatherRestService {
             return myResponse;
         } else
             myResponse = new HashMap<>();
-            myResponse.put("Ошибка сервиса получения данных из сервиса","WeatherStack");
-            log.info("getMyResponseForOpenWeatherMap() Мар не получена, сервис вернул {} ", myResponse);
+        myResponse.put("Ошибка сервиса получения данных из сервиса", "WeatherStack");
+        log.info("getMyResponseForOpenWeatherMap() Мар не получена, сервис вернул {} ", myResponse);
         return myResponse;
     }
 
-    /**Получить Map из Object
+    /**
+     * Получить Map из Object
      *
      * @param JsonObj - исходный Object
      * @return - Map, где ключ "temp", а значение полученная из сервиса температура
@@ -155,10 +161,11 @@ public class WeatherRestServiceImpl implements WeatherRestService {
         return myResponse;
     }
 
-    /** Получение средней температуры из трех сервисов по городам на англ. языке
-     *  указанным в файле (с уточнением страны, где он находится)
-     *  на текущий момент
-     *  усреднение и запись в in-memory database с текущим timestamp;
+    /**
+     * Получение средней температуры из трех сервисов по городам на англ. языке
+     * указанным в файле (с уточнением страны, где он находится)
+     * на текущий момент
+     * усреднение и запись в in-memory database с текущим timestamp;
      */
     @Scheduled(fixedRateString = "${weather.periodicity.in.milliseconds}")
     public void averagingTheWeatherAndRecordingInDatabase() {
@@ -171,13 +178,14 @@ public class WeatherRestServiceImpl implements WeatherRestService {
         }
     }
 
-    /** Получение средней температуры из трех сервисов
-     *  по городам на англ. языке с уточнением страны, где он находится
-     *  на текущий момент
+    /**
+     * Получение средней температуры из трех сервисов
+     * по городам на англ. языке с уточнением страны, где он находится
+     * на текущий момент
      *
-     * @param city - искомый город
+     * @param city    - искомый город
      * @param country - страна города
-     * @param date - текущий timestamp
+     * @param date    - текущий timestamp
      * @return - средняя температура в городе на текущий момент
      */
     public Float getAveragingTemperature(String city, String country, String date) {
@@ -204,22 +212,23 @@ public class WeatherRestServiceImpl implements WeatherRestService {
 
         Map<String, String> myResponseForWeatherStack = getMyResponseForWeatherStack(
                 getWeatherByCityFromWeatherStack(city, country, date));
-        if (myResponseForWeatherStack.get("temp")!= null) {
+        if (myResponseForWeatherStack.get("temp") != null) {
             String responseFromService3 = myResponseForWeatherStack.get("temp");
             temperatureWeatherStack = Float.parseFloat(responseFromService3);
             numberOfWorkingServices++;
         }
 
-        Float averageTemperature =  (temperatureFromOpenWeatherMap + temperatureFromWeatherApi + temperatureWeatherStack) / numberOfWorkingServices ;
+        Float averageTemperature = (temperatureFromOpenWeatherMap + temperatureFromWeatherApi + temperatureWeatherStack) / numberOfWorkingServices;
         log.info("getAveragingTemperature() В городе {} средняя температура {}", city, averageTemperature);
         return averageTemperature;
     }
 
-    /** Запись сущности в базу
+    /**
+     * Запись сущности в базу
      *
-     * @param city - искомый город
-     * @param country - страна города
-     * @param date - timestamp
+     * @param city               - искомый город
+     * @param country            - страна города
+     * @param date               - timestamp
      * @param averageTemperature - среднаяя температура
      */
     public void writeRecordInDatabase(String city, String country, String date, Float averageTemperature) {
@@ -233,11 +242,12 @@ public class WeatherRestServiceImpl implements WeatherRestService {
     }
 
 
-    /** Получить все значения средней температуры в городе на дату
+    /**
+     * Получить все значения средней температуры в городе на дату
      *
-     * @param city - искомый город
+     * @param city    - искомый город
      * @param country - страна города
-     * @param date - timestamp или дата
+     * @param date    - timestamp или дата
      * @return - все значения средней температуры в городе на дату
      */
     @Override
@@ -248,9 +258,10 @@ public class WeatherRestServiceImpl implements WeatherRestService {
         return temperatureInCityList;
     }
 
-    /** Последнее известное значение средней температуры для города (ака "температура сейчас")
+    /**
+     * Последнее известное значение средней температуры для города (ака "температура сейчас")
      *
-     * @param city - искомый город
+     * @param city    - искомый город
      * @param country - страна города
      * @return - температура сейчас
      */

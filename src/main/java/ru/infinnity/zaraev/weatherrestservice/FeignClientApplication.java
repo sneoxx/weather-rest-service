@@ -42,7 +42,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
  На логику сервиса написаны, юнит-тесты (JUnit, Mockito). И интеграционные тесты
 
-
 /**
  * Класс регистрирующий Spring Dispatcher Servlet и запускающий приложение
  */
